@@ -3,6 +3,7 @@ package com.shopping.flipkart.security.impl;
 import static com.shopping.flipkart.constant.Error.*;
 
 import com.shopping.flipkart.dto.UserRequest;
+import com.shopping.flipkart.error.exception.UserNotFoundException;
 import com.shopping.flipkart.model.User;
 import com.shopping.flipkart.repository.UserRepository;
 import com.shopping.flipkart.security.UserService;
@@ -41,13 +42,13 @@ public class UserServiceImpl implements UserService {
    @Override
    public User getUserById(Long id) {
       return userRepository.findById(id)
-         .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
+         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND + id));
    }
 
    @Override
    public User getUserByEmail(String email) {
       return userRepository.findByEmail(email)
-         .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
+         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
    }
 
    @Override
@@ -61,13 +62,13 @@ public class UserServiceImpl implements UserService {
          user.setPassword(userRequest.password());
          return userRepository.save(user);
       }
-      throw new IllegalArgumentException(USER_NOT_FOUND);
+      throw new UserNotFoundException(USER_NOT_FOUND + id);
    }
 
    @Override
    public void deleteUser(Long id) {
       if (!userRepository.existsById(id)) {
-         throw new IllegalArgumentException(USER_NOT_FOUND);
+         throw new UserNotFoundException(USER_NOT_FOUND + id);
       }
       userRepository.deleteById(id);
    }
