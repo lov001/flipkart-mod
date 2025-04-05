@@ -1,9 +1,11 @@
 package com.shopping.flipkart.error.exception;
 
-public class UserNotFoundException extends RuntimeException {
+import com.shopping.flipkart.error.ErrorCode;
 
-   public UserNotFoundException(String message) {
-      super(message);
+public class UserNotFoundException extends BaseException {
+
+   public UserNotFoundException() {
+      super(ErrorCode.USER_NOT_FOUND);
    }
 
 }
