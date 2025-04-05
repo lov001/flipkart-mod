@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -23,7 +24,7 @@ public class SecurityConfig {
             ).permitAll()
             .anyRequest().permitAll() // You can change this to authenticated() if needed
          )
-         .csrf(csrf -> csrf.disable()) // disables CSRF in modern syntax
+         .csrf(AbstractHttpConfigurer::disable) // disables CSRF in modern syntax
          .httpBasic(Customizer.withDefaults())
          .build();
    }

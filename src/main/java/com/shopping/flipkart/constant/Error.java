@@ -2,7 +2,7 @@ package com.shopping.flipkart.constant;
 
 public class Error {
 
-   public static final String USER_NOT_FOUND = "User not found";
+   public static final String USER_NOT_FOUND = "User not found with id: ";
    public static final String EMAIL_ALREADY_EXISTS = "Email already exists";
    public static final String INVALID_EMAIL = "Invalid email format";
    public static final String INVALID_PHONE = "Invalid phone number format";
