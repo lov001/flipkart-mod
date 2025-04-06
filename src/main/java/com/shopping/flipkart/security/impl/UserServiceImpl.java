@@ -1,5 +1,6 @@
 package com.shopping.flipkart.security.impl;
 
+import com.shopping.flipkart.dto.UserKafkaDTO;
 import com.shopping.flipkart.dto.UserRequest;
 import com.shopping.flipkart.error.ErrorCode;
 import com.shopping.flipkart.error.exception.BaseException;
@@ -35,7 +36,9 @@ public class UserServiceImpl implements UserService {
          .password(userRequest.password())
          .build();
       User savedUser = userRepository.save(user);
-      userEventProducer.sendUserEvent("User created: " + savedUser.getId());
+      UserKafkaDTO dto = new UserKafkaDTO(user.getId(), user.getName(), user.getEmail(),
+         user.getPhone());
+      userEventProducer.sendUserEvent(dto);
       return savedUser;
    }
 
@@ -72,10 +75,13 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public void deleteUser(Long id) {
-      if (!userRepository.existsById(id)) {
+      Optional<User> userOptional = userRepository.findById(id);
+      if (userOptional.isEmpty()) {
          throw new UserNotFoundException();
       }
       userRepository.deleteById(id);
-      userEventProducer.sendUserEvent("User deleted: " + id);
+      UserKafkaDTO dto = new UserKafkaDTO(userOptional.get().getId(), userOptional.get().getName(),
+         userOptional.get().getEmail(), userOptional.get().getPhone());
+      userEventProducer.sendUserEvent(dto);
    }
 }
