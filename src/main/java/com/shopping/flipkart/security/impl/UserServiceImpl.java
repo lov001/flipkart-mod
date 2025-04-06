@@ -1,8 +1,8 @@
 package com.shopping.flipkart.security.impl;
 
-import static com.shopping.flipkart.constant.Error.*;
-
 import com.shopping.flipkart.dto.UserRequest;
+import com.shopping.flipkart.error.ErrorCode;
+import com.shopping.flipkart.error.exception.BaseException;
 import com.shopping.flipkart.error.exception.UserNotFoundException;
 import com.shopping.flipkart.model.User;
 import com.shopping.flipkart.repository.UserRepository;
@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
    @Override
    public User createUser(UserRequest userRequest) {
       if (userRepository.existsByEmail(userRequest.email())) {
-         throw new IllegalArgumentException(EMAIL_ALREADY_EXISTS);
+         throw new BaseException(ErrorCode.EMAIL_ALREADY_EXISTS);
       }
       User user = User.builder()
          .name(userRequest.name())
@@ -42,13 +42,13 @@ public class UserServiceImpl implements UserService {
    @Override
    public User getUserById(Long id) {
       return userRepository.findById(id)
-         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND + id));
+         .orElseThrow(UserNotFoundException::new);
    }
 
    @Override
    public User getUserByEmail(String email) {
       return userRepository.findByEmail(email)
-         .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+         .orElseThrow(UserNotFoundException::new);
    }
 
    @Override
@@ -62,13 +62,13 @@ public class UserServiceImpl implements UserService {
          user.setPassword(userRequest.password());
          return userRepository.save(user);
       }
-      throw new UserNotFoundException(USER_NOT_FOUND + id);
+      throw new UserNotFoundException();
    }
 
    @Override
    public void deleteUser(Long id) {
       if (!userRepository.existsById(id)) {
-         throw new UserNotFoundException(USER_NOT_FOUND + id);
+         throw new UserNotFoundException();
       }
       userRepository.deleteById(id);
    }
